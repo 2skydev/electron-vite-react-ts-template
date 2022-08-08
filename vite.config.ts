@@ -11,6 +11,9 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   plugins: [
     react(),
+    checker({}),
+    tsconfigPaths(),
+    svgr(),
     electron({
       main: {
         entry: 'electron/index.ts',
@@ -21,9 +24,6 @@ export default defineConfig({
         },
       },
     }),
-    tsconfigPaths(),
-    svgr(),
-    checker({}),
   ],
   server: {
     port: 3000,
