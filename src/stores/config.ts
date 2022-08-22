@@ -1,12 +1,14 @@
-import { atom } from 'recoil';
+import { ConfigStoreValues } from '@app/stores/config';
+import { atom, AtomEffect } from 'recoil';
 
-export interface ConfigStoreValues {
-  theme: 'light' | 'dark';
-}
+const appStoreSyncEffect: AtomEffect<ConfigStoreValues> = ({ onSet }) => {
+  onSet(newValue => {
+    window.electron.setConfig(newValue);
+  });
+};
 
 export const configStore = atom<ConfigStoreValues>({
   key: 'config',
-  default: {
-    theme: 'light',
-  },
+  default: window.electron.getConfig(),
+  effects: [appStoreSyncEffect],
 });

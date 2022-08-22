@@ -1,5 +1,5 @@
-import { Link } from '@tanstack/react-location';
 import { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (

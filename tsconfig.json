@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "ES2017",
+    "module": "ESNext",
     "baseUrl": ".",
     "outDir": "dist",
     "esModuleInterop": true,
     "moduleResolution": "Node",
-    "resolveJsonModule": true,
     "allowJs": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
@@ -17,9 +16,15 @@
       "ESNext"
     ],
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "declaration": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "types": [
+      "vite/client"
+    ],
     "plugins": [
       {
         "name": "typescript-styled-plugin"
@@ -27,7 +32,7 @@
     ]
   },
   "include": [
-    "src",
+    "./src",
     "vite.config.ts"
   ],
   "extends": "./tsconfig.paths.json"

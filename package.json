@@ -1,19 +1,27 @@
 {
   "name": "electron-vite-react-ts-template",
   "private": true,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "electron-vite-react-ts-template",
-  "main": "dist/electron/index.js",
+  "main": "dist/app/index.js",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && electron-builder"
+    "build": "tsc && vite build && electron-builder",
+    "build:win": "tsc && vite build && electron-builder --win --x64",
+    "build:mac": "tsc && vite build && electron-builder --mac",
+    "build:all": "tsc && vite build && electron-builder --win --x64 --mac",
+    "build:vite": "tsc && vite build",
+    "preview": "vite preview",
+    "g": "node generator.mjs"
   },
   "dependencies": {
-    "@tanstack/react-location": "^3.7.4",
     "clsx": "^1.2.1",
     "dayjs": "^1.11.4",
+    "electron-log": "^4.4.8",
     "electron-store": "^8.1.0",
+    "electron-updater": "^5.2.1",
     "formik": "^2.2.9",
+    "path-to-regexp": "^6.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
@@ -34,6 +42,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.30.1",
+    "inquirer": "^9.1.0",
     "prettier": "^2.7.1",
     "typescript": "^4.6.4",
     "typescript-styled-plugin": "^0.18.2",
@@ -42,25 +51,5 @@
     "vite-plugin-electron": "^0.8.4",
     "vite-plugin-svgr": "^2.2.1",
     "vite-tsconfig-paths": "^3.5.0"
-  },
-  "build": {
-    "appId": "com.test.templateapp",
-    "productName": "TemplateApp",
-    "asar": true,
-    "win": {
-      "target": "nsis"
-    },
-    "nsis": {
-      "oneClick": true,
-      "artifactName": "TemplateApp 설치 ${version}.${ext}",
-      "uninstallDisplayName": "TemplateApp",
-      "installerIcon": "resources/windows/logo.ico"
-    },
-    "files": [
-      "dist/**/*"
-    ],
-    "extraResources": [
-      "./resources/**"
-    ]
   }
 }

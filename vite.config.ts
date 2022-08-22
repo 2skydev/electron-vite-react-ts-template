@@ -16,15 +16,26 @@ export default defineConfig({
     svgr(),
     electron({
       main: {
-        entry: 'electron/index.ts',
+        entry: 'app/index.ts',
+        vite: {
+          build: {
+            outDir: 'dist/app',
+          },
+        },
       },
       preload: {
         input: {
-          index: join(__dirname, 'electron/preload/index.ts'),
+          index: join(__dirname, 'app/preload/index.ts'),
+        },
+        vite: {
+          build: {
+            outDir: 'dist/app/preload',
+          },
         },
       },
     }),
   ],
+  clearScreen: false,
   server: {
     port: 3000,
     strictPort: true,

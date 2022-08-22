@@ -1,0 +1,37 @@
+{
+  "appId": "com.test.templateapp",
+  "productName": "TemplateApp",
+  "protocols": {
+    "name": "templateapp",
+    "schemes": [
+      "templateapp"
+    ]
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "2skydev",
+      "repo": "electron-vite-react-ts-template"
+    }
+  ],
+  "asar": true,
+  "win": {
+    "target": "nsis",
+    "icon": "resources/icons/logo@256.ico"
+  },
+  "mac": {
+    "target": "dmg",
+    "icon": "resources/icons/logo@512.png"
+  },
+  "nsis": {
+    "oneClick": true,
+    "artifactName": "TemplateApp-Setup-${version}.${ext}",
+    "uninstallDisplayName": "TemplateApp"
+  },
+  "extraResources": [
+    "./resources/**"
+  ],
+  "directories": {
+    "output": "release/"
+  }
+}
