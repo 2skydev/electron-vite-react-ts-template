@@ -1,9 +1,10 @@
+![electron-vite-template-github-card](https://user-images.githubusercontent.com/43225384/196135599-585afdc5-9905-4400-bb02-ab0e7720da50.png)
+
+
 # Electron + Vite + React + TypeScript Template
 
 A template for using electron quickly.<br/>
 Please understand that the code and explanation are mainly written in Korean. 🥲
-
-<img width="1718" alt="image" src="https://user-images.githubusercontent.com/43225384/196126603-388acf2c-760b-45f2-8738-5c1d2a4b4892.png">
 
 ## 기능들 둘러보기
 - electron & vite를 사용해 빠른 개발, 빌드가 가능한 TypeScript 환경
