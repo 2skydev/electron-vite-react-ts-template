@@ -12,6 +12,7 @@ Please understand that the code and explanation are mainly written in Korean. �
 - electron 기능 개발시 modules로 분리 개발 가능하도록 구성 (관심사 분리 및 앱의 여러 상태들을 공유하기 위해 modules로 처리) (autoload 처리)
 - deeplink 처리 (`modules/deepLink/resolvers` 예시) (autoload 처리)
 - 빠른 개발을 위한 파일 생성기 (`yarn g` 명령어로 사용가능)
+- Windows, MacOS 크로스플랫폼을 고려한 개발
 
 <br />
 
