@@ -6,6 +6,8 @@
 A template for using electron quickly.<br/>
 Please understand that the code and explanation are mainly written in Korean. 🥲
 
+<br />
+
 ## 기능들 둘러보기
 - electron & vite를 사용해 빠른 개발, 빌드가 가능한 TypeScript 환경
 - 앱에 필수적인 요소 자동 업데이트, 저장소, 로그 등 사전구성
