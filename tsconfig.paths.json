@@ -2,10 +2,10 @@
   "compilerOptions": {
     "paths": {
       "@app/*": [
-        "app/*"
+        "./app/*"
       ],
       "~/*": [
-        "src/*"
+        "./src/*"
       ]
     }
   }

@@ -4,7 +4,6 @@ import inquirer from 'inquirer';
 
 const PAGE_DIR = './src/pages';
 const PAGE_STYLED_DIR = './src/styles/pageStyled';
-const FEATURES_DIR = './src/features';
 const COMPONENT_DIR = './src/components';
 
 function capitalize(str) {
@@ -98,37 +97,12 @@ const start = async () => {
       type: 'list',
       name: 'type',
       message: 'Choose type',
-      choices: ['feature', 'component', 'page'],
-      default: 'feature',
+      choices: ['component', 'page'],
+      default: 'component',
     },
   ]);
 
   switch (type) {
-    case 'feature': {
-      const { pageName, componentName } = await inquirer.prompt([
-        createPromptInput({ name: 'pageName', label: 'Page name (camelCase)' }),
-        createPromptInput({
-          name: 'componentName',
-          label: 'Component name (PascalCase)',
-        }),
-      ]);
-
-      const pageDir = `${FEATURES_DIR}/${pageName}`;
-      const componentDir = `${pageDir}/${componentName}`;
-
-      if (fs.existsSync(componentDir)) {
-        console.log(`🛑 Component [${componentName}] already exists`);
-        process.exit(0);
-      }
-
-      if (!fs.existsSync(pageDir)) {
-        fs.mkdirSync(pageDir);
-      }
-
-      createComponentAndFileOpen(componentDir, componentName);
-      break;
-    }
-
     case 'component': {
       const { componentName } = await inquirer.prompt([
         createPromptInput({

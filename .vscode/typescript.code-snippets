@@ -1,11 +1,45 @@
 {
-  "Styled Components Props": {
+  "Styled Components Export": {
+    "prefix": [
+      "sc"
+    ],
+    "body": [
+      "import styled from 'styled-components';",
+      "\n",
+      "export const ${TM_DIRECTORY/^.+\\/(.*)$/$1/}Styled = styled.div`",
+      "  $0",
+      "`"
+    ],
+    "description": "Styled Components 내보내기"
+  },
+  "Styled Components Props Theme": {
     "prefix": [
       "pro"
     ],
     "body": [
-      "${props => props${0}}"
+      "${props => props.theme${0}}"
     ],
-    "description": "Styled Components Props"
+    "description": "Styled Components Props 자동완성"
+  },
+  "Component styled": {
+    "prefix": [
+      "cs"
+    ],
+    "body": [
+      "import clsx from 'clsx';\n",
+      "import { ${TM_DIRECTORY/^.+\\/(.*)$/$1/}Styled } from './styled';\n",
+      "interface ${TM_DIRECTORY/^.+\\/(.*)$/$1/}Props {",
+      "  className?: string;",
+      "}\n",
+      "const ${TM_DIRECTORY/^.+\\/(.*)$/$1/} = ({ className }: ${TM_DIRECTORY/^.+\\/(.*)$/$1/}Props) => {",
+      "  return (",
+      "    <${TM_DIRECTORY/^.+\\/(.*)$/$1/}Styled className={clsx('${TM_DIRECTORY/^.+\\/(.*)$/$1/}', className)}>",
+      "      $0",
+      "    </${TM_DIRECTORY/^.+\\/(.*)$/$1/}Styled>",
+      "  )",
+      "}\n",
+      "export default ${TM_DIRECTORY/^.+\\/(.*)$/$1/}"
+    ],
+    "description": "컴포넌트 생성 & Styled Components 사용"
   }
 }

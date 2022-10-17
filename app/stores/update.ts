@@ -1,6 +1,6 @@
 import Store from 'electron-store';
 
-import { UpdateStatus } from '../utils/update';
+import { UpdateStatus } from '@app/modules/update';
 
 export interface UpdateStoreValues {
   status: UpdateStatus;
