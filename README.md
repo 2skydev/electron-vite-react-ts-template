@@ -1,4 +1,4 @@
-# electron-vite-react-ts-template
+# Electron + Vite + React + TypeScript template
 
 A template for using electron quickly.<br/>
 Please understand that the code and explanation are mainly written in Korean. 🥲
