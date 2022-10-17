@@ -1,4 +1,4 @@
-# Electron + Vite + React + TypeScript template
+# Electron + Vite + React + TypeScript Template
 
 A template for using electron quickly.<br/>
 Please understand that the code and explanation are mainly written in Korean. 🥲
