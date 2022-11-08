@@ -1,14 +1,24 @@
 import { exec } from 'child_process';
 import fs from 'fs';
+import { readdir } from 'fs/promises';
 import inquirer from 'inquirer';
+import inquirerPrompt from 'inquirer-autocomplete-prompt';
+
+inquirer.registerPrompt('autocomplete', inquirerPrompt);
 
 const PAGE_DIR = './src/pages';
 const PAGE_STYLED_DIR = './src/styles/pageStyled';
 const COMPONENT_DIR = './src/components';
+const FEATURES_DIR = './src/features';
 
-function capitalize(str) {
+const capitalize = str => {
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
+};
+
+const getDirectories = async source =>
+  (await readdir(source, { withFileTypes: true }))
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
 
 const createIndexFileText = name => {
   return [`export * from './${name}';`, `export { default } from './${name}';`, ``].join('\n');
@@ -16,18 +26,21 @@ const createIndexFileText = name => {
 
 const createComponentFileText = name => {
   return [
+    `import { ReactNode } from 'react';`,
+    ``,
     `import clsx from 'clsx';`,
     ``,
     `import { ${name}Styled } from './styled';`,
     ``,
     `export interface ${name}Props {`,
     `  className?: string;`,
+    `  children?: ReactNode;`,
     `}`,
     ``,
-    `const ${name} = ({ className }: ${name}Props) => {`,
+    `const ${name} = ({ className, children }: ${name}Props) => {`,
     `  return (`,
     `    <${name}Styled className={clsx('${name}', className)}>`,
-    `      `,
+    `      {children}`,
     `    </${name}Styled>`,
     `  );`,
     `};`,
@@ -66,6 +79,16 @@ const createPageFileText = name => {
   ].join('\n');
 };
 
+const createHookFileText = name => {
+  // prettier-ignore
+  return [
+    `export const use${name} = () => {`,
+    `  return {};`,
+    `}`,
+    ``,    
+  ].join('\n');
+};
+
 const createPromptInput = options => {
   const { name = 'name', label } = options;
 
@@ -79,8 +102,50 @@ const createPromptInput = options => {
   };
 };
 
+const editParentComponentExportFile = async parentComponentName => {
+  const parentComponentDir = `${COMPONENT_DIR}/${parentComponentName}`;
+  const parentComponentExportFile = `${parentComponentDir}/index.ts`;
+
+  const subComponentNames = await getDirectories(parentComponentDir);
+
+  let texts = [
+    `// 자동으로 생성된 파일입니다. 수정하지 마세요.`,
+    `import _${parentComponentName} from './${parentComponentName}';`,
+  ];
+
+  texts.push(
+    ...subComponentNames.map(
+      subComponentName => `import ${subComponentName} from './${subComponentName}';`,
+    ),
+  );
+
+  texts.push(
+    ...[
+      ``,
+      `type _${parentComponentName} = typeof _${parentComponentName};`,
+      ``,
+      `interface ${parentComponentName}Type extends _${parentComponentName} {`,
+      ...subComponentNames.map(
+        subComponentName => `  ${subComponentName}: typeof ${subComponentName};`,
+      ),
+      `}`,
+      ``,
+      `const ${parentComponentName} = _${parentComponentName} as ${parentComponentName}Type;`,
+      ``,
+      ...subComponentNames.map(
+        subComponentName => `${parentComponentName}.${subComponentName} = ${subComponentName};`,
+      ),
+      ``,
+      `export default ${parentComponentName};`,
+      ``,
+    ],
+  );
+
+  fs.writeFileSync(parentComponentExportFile, texts.join('\n'));
+};
+
 const createComponentAndFileOpen = (dir, name) => {
-  fs.mkdirSync(dir);
+  fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(`${dir}/styled.ts`, createStyledFileText(name));
   fs.writeFileSync(`${dir}/${name}.tsx`, createComponentFileText(name));
   fs.writeFileSync(`${dir}/index.ts`, createIndexFileText(name));
@@ -88,7 +153,7 @@ const createComponentAndFileOpen = (dir, name) => {
   console.log(`🎉 Component [${name}] created`);
   console.log(`📂 Open file...`);
 
-  exec(`code -g ${dir}/${name}.tsx:12:7`);
+  exec(`code -g ${dir}/${name}.tsx:15:17`);
 };
 
 const start = async () => {
@@ -97,12 +162,37 @@ const start = async () => {
       type: 'list',
       name: 'type',
       message: 'Choose type',
-      choices: ['component', 'page'],
-      default: 'component',
+      choices: ['feature', 'page', 'component', 'sub-component'],
+      default: 'feature',
     },
   ]);
 
   switch (type) {
+    case 'feature': {
+      const { pageName, componentName } = await inquirer.prompt([
+        createPromptInput({ name: 'pageName', label: 'Page name (camelCase)' }),
+        createPromptInput({
+          name: 'componentName',
+          label: 'Component name (PascalCase)',
+        }),
+      ]);
+
+      const pageDir = `${FEATURES_DIR}/${pageName}`;
+      const componentDir = `${pageDir}/${componentName}`;
+
+      if (fs.existsSync(componentDir)) {
+        console.log(`🛑 Component [${componentName}] already exists`);
+        process.exit(0);
+      }
+
+      if (!fs.existsSync(pageDir)) {
+        fs.mkdirSync(pageDir, { recursive: true });
+      }
+
+      createComponentAndFileOpen(componentDir, componentName);
+      break;
+    }
+
     case 'component': {
       const { componentName } = await inquirer.prompt([
         createPromptInput({
@@ -119,6 +209,43 @@ const start = async () => {
       }
 
       createComponentAndFileOpen(componentDir, componentName);
+
+      break;
+    }
+
+    case 'sub-component': {
+      const componentNames = await getDirectories(COMPONENT_DIR);
+
+      const { parentComponentName } = await inquirer.prompt([
+        {
+          type: 'autocomplete',
+          name: 'parentComponentName',
+          message: 'Choose component',
+          source: (_, input) => {
+            return componentNames.filter(name =>
+              name.toLowerCase().includes((input || '').toLowerCase()),
+            );
+          },
+        },
+      ]);
+
+      const { componentName } = await inquirer.prompt([
+        createPromptInput({
+          name: 'componentName',
+          label: 'Sub component name (PascalCase)',
+        }),
+      ]);
+
+      const componentDir = `${COMPONENT_DIR}/${parentComponentName}/${componentName}`;
+
+      if (fs.existsSync(componentDir)) {
+        console.log(`🛑 Component [${componentName}] already exists`);
+        process.exit(0);
+      }
+
+      createComponentAndFileOpen(componentDir, componentName);
+      await editParentComponentExportFile(parentComponentName);
+
       break;
     }
 
@@ -187,7 +314,7 @@ const start = async () => {
       console.log(`🎉 Page [${name}] created`);
       console.log(`📂 Open file...`);
 
-      exec(`code -g ${pagePath}:8:7`);
+      exec(`code -g ${pagePath}:6:7`);
       break;
     }
   }
