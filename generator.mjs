@@ -79,16 +79,6 @@ const createPageFileText = name => {
   ].join('\n');
 };
 
-const createHookFileText = name => {
-  // prettier-ignore
-  return [
-    `export const use${name} = () => {`,
-    `  return {};`,
-    `}`,
-    ``,    
-  ].join('\n');
-};
-
 const createPromptInput = options => {
   const { name = 'name', label } = options;
 
