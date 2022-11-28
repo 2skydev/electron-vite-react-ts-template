@@ -3,7 +3,7 @@ import { useRoutes, RouteObject } from 'react-router-dom';
 
 type Element = () => JSX.Element;
 
-interface Route extends RouteObject {}
+type Route = RouteObject;
 
 interface FileSystemRoutesProps {}
 
