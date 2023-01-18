@@ -21,7 +21,12 @@ const getDirectories = async source =>
     .map(dirent => dirent.name);
 
 const createIndexFileText = name => {
-  return [`export * from './${name}';`, `export { default } from './${name}';`, ``].join('\n');
+  return [
+    `// === Automatically generated file. Don't edit it. ===`,
+    `export * from './${name}';`,
+    `export { default } from './${name}';`,
+    ``,
+  ].join('\n');
 };
 
 const createComponentFileText = name => {
@@ -99,7 +104,7 @@ const editParentComponentExportFile = async parentComponentName => {
   const subComponentNames = await getDirectories(parentComponentDir);
 
   let texts = [
-    `// 자동으로 생성된 파일입니다. 수정하지 마세요.`,
+    `// === Automatically generated file. Don't edit it. ===`,
     `import _${parentComponentName} from './${parentComponentName}';`,
   ];
 
@@ -159,24 +164,26 @@ const start = async () => {
 
   switch (type) {
     case 'feature': {
-      const { pageName, componentName } = await inquirer.prompt([
-        createPromptInput({ name: 'pageName', label: 'Page name (camelCase)' }),
+      const { featureName, componentName } = await inquirer.prompt([
+        createPromptInput({ name: 'featureName', label: 'Feature name (camelCase)' }),
         createPromptInput({
           name: 'componentName',
           label: 'Component name (PascalCase)',
         }),
       ]);
 
-      const pageDir = `${FEATURES_DIR}/${pageName}`;
-      const componentDir = `${pageDir}/${componentName}`;
+      const featureDir = `${FEATURES_DIR}/${featureName}`;
+      const componentDir = `${featureDir}/${componentName}`;
 
+      // check component dir already exists
       if (fs.existsSync(componentDir)) {
         console.log(`🛑 Component [${componentName}] already exists`);
         process.exit(0);
       }
 
-      if (!fs.existsSync(pageDir)) {
-        fs.mkdirSync(pageDir, { recursive: true });
+      // not found feature dir -> create dir
+      if (!fs.existsSync(featureDir)) {
+        fs.mkdirSync(featureDir, { recursive: true });
       }
 
       createComponentAndFileOpen(componentDir, componentName);
@@ -193,6 +200,7 @@ const start = async () => {
 
       const componentDir = `${COMPONENT_DIR}/${componentName}`;
 
+      // check component dir already exists
       if (fs.existsSync(componentDir)) {
         console.log(`🛑 Component [${componentName}] already exists`);
         process.exit(0);
@@ -228,6 +236,7 @@ const start = async () => {
 
       const componentDir = `${COMPONENT_DIR}/${parentComponentName}/${componentName}`;
 
+      // check component dir already exists
       if (fs.existsSync(componentDir)) {
         console.log(`🛑 Component [${componentName}] already exists`);
         process.exit(0);
@@ -253,7 +262,7 @@ const start = async () => {
       const dir = pagePath.split('/').slice(0, -1).join('/');
       const nameArray = pagePathInput.split('/');
 
-      // camelCase 처리
+      // processing camelCase
       let name = nameArray
         .reduce((acc, item, i) => {
           if (i === 0) return [item];
@@ -270,35 +279,33 @@ const start = async () => {
         }, [])
         .join('');
 
-      // 페이지 파일 중복 체크
+      // check page file already exists
       if (fs.existsSync(pagePath)) {
         console.log(`🛑 [${pagePath}] already exists`);
         process.exit(0);
       }
 
-      // 페이지 스타일 파일 중복 체크
+      // check page styled file already exists
       if (fs.existsSync(`${PAGE_STYLED_DIR}/${name}PageStyled.ts`)) {
         console.log(`🛑 [${PAGE_STYLED_DIR}/${name}PageStyled.ts] already exists`);
         process.exit(0);
       }
 
-      // 페이지 dir이 없다면 생성
+      // not found page dir -> create dir
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
 
-      // 페이지 스타일 dir이 없다면 생성
+      // not found styled dir -> create dir
       if (!fs.existsSync(PAGE_STYLED_DIR)) {
         fs.mkdirSync(PAGE_STYLED_DIR, { recursive: true });
       }
 
-      // 페이지 스타일 파일 생성
       fs.writeFileSync(
         `${PAGE_STYLED_DIR}/${name}PageStyled.ts`,
         createStyledFileText(capitalize(name) + 'Page'),
       );
 
-      // 페이지 파일 생성
       fs.writeFileSync(pagePath, createPageFileText(name));
 
       console.log(`🎉 Page [${name}] created`);
