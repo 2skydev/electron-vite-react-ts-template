@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useMemo } from 'react';
+import { Outlet } from 'react-router-dom';
 
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { ThemeProvider } from 'styled-components';
@@ -57,7 +58,9 @@ const App = ({ children }: { children: ReactNode }) => {
 
       <div id="app">
         <Titlebar />
-        <Layout>{children}</Layout>
+        <Layout>
+          <Outlet />
+        </Layout>
       </div>
     </ThemeProvider>
   );

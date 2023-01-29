@@ -1,8 +1,9 @@
 import react from '@vitejs/plugin-react';
+
 import { join } from 'path';
 import { defineConfig } from 'vite';
+import electron from 'vite-electron-plugin';
 import checker from 'vite-plugin-checker';
-import electron from 'vite-plugin-electron';
 import svgr from 'vite-plugin-svgr';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
@@ -13,25 +14,7 @@ export default defineConfig({
     tsconfigPaths(),
     svgr(),
     electron({
-      main: {
-        entry: 'app/index.ts',
-        vite: {
-          plugins: [tsconfigPaths()],
-          build: {
-            outDir: 'dist/app',
-          },
-        },
-      },
-      preload: {
-        input: {
-          index: join(__dirname, 'app/preload/index.ts'),
-        },
-        vite: {
-          build: {
-            outDir: 'dist/app/preload',
-          },
-        },
-      },
+      include: ['electron'],
     }),
   ],
   clearScreen: false,

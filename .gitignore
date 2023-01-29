@@ -8,3 +8,4 @@ dist
 /resources/windows/chromium
 chrome_data
 release
+dist-electron

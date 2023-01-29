@@ -33,7 +33,7 @@
   },
   "include": [
     "./src",
-    "./app",
+    "./electron",
     "vite.config.ts"
   ],
   "extends": "./tsconfig.paths.json"

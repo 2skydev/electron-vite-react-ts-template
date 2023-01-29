@@ -1,8 +1,6 @@
 import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
 
-import 'antd/dist/antd.css';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -30,13 +28,11 @@ const swrConfig: SWRConfiguration = {
 };
 
 createRoot(document.getElementById('root') as HTMLElement).render(
-  <HashRouter>
-    <RecoilRoot>
-      <SWRConfig value={swrConfig}>
-        <Suspense>
-          <FileSystemRoutes />
-        </Suspense>
-      </SWRConfig>
-    </RecoilRoot>
-  </HashRouter>,
+  <RecoilRoot>
+    <SWRConfig value={swrConfig}>
+      <Suspense>
+        <FileSystemRoutes />
+      </Suspense>
+    </SWRConfig>
+  </RecoilRoot>,
 );
