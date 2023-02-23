@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { rgba, lighten, darken } from 'polished';
 import { createGlobalStyle } from 'styled-components';
 
-export const InitGlobalStyled = createGlobalStyle`
+export const InitGlobalStyled = memo(createGlobalStyle`
   *::-webkit-scrollbar {
     width: 8px;
     height: 10px;
@@ -456,4 +456,4 @@ export const InitGlobalStyled = createGlobalStyle`
       border-color: ${props => props.theme.colors.borderColor};
     }
   }
-`;
+`);

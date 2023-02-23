@@ -7,7 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { RecoilRoot } from 'recoil';
 import { SWRConfig, SWRConfiguration } from 'swr';
 
-import { ElectronRendererContext } from '@app/preload';
+import { ElectronRendererContext } from '@app/types/preload';
 
 import FileSystemRoutes from '~/components/FileSystemRoutes';
 

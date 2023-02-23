@@ -1,10 +1,10 @@
 import react from '@vitejs/plugin-react';
 
-import { join } from 'path';
+import path from 'path';
 import { defineConfig } from 'vite';
 import electron from 'vite-electron-plugin';
+import { alias } from 'vite-electron-plugin/plugin';
 import checker from 'vite-plugin-checker';
-import svgr from 'vite-plugin-svgr';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
@@ -12,9 +12,16 @@ export default defineConfig({
     react(),
     checker({}),
     tsconfigPaths(),
-    svgr(),
     electron({
-      include: ['electron'],
+      include: ['app'],
+      plugins: [
+        alias([
+          {
+            find: '@app',
+            replacement: path.join(__dirname, 'app'),
+          },
+        ]),
+      ],
     }),
   ],
   clearScreen: false,

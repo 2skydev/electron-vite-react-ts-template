@@ -1,4 +1,22 @@
+import { ThemeConfig } from 'antd/es/config-provider/context';
+
 export const sizes = {};
+
+export const darkTheme = {
+  primary: '#06CA91',
+  sidebarBG: '#2E3136',
+  contentBG: '#36393F',
+  selectedBG: '#3f3e36',
+  scrollTrackBG: '#2e3338',
+  scrollThumbBG: '#202225',
+  borderColor: '#43474D',
+  textColor1: '#ffffff',
+  textColor2: '#8E9297',
+  success: '#4caf50',
+  error: '#FE6968',
+  relic: '#ff6000',
+  ancient: '#c9a472',
+};
 
 export const lightTheme = {
   primary: '#06CA91',
@@ -16,18 +34,8 @@ export const lightTheme = {
   ancient: '#c9a472',
 };
 
-export const darkTheme = {
-  primary: '#06CA91',
-  sidebarBG: '#2E3136',
-  contentBG: '#36393F',
-  selectedBG: '#3f3e36',
-  scrollTrackBG: '#2e3338',
-  scrollThumbBG: '#202225',
-  borderColor: '#43474D',
-  textColor1: '#ffffff',
-  textColor2: '#8E9297',
-  success: '#4caf50',
-  error: '#FE6968',
-  relic: '#ff6000',
-  ancient: '#c9a472',
+export const antdTheme: ThemeConfig = {
+  token: {
+    colorPrimary: darkTheme.primary,
+  },
 };

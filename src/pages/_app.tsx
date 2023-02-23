@@ -1,6 +1,7 @@
-import { ReactNode, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Outlet } from 'react-router-dom';
 
+import { ConfigProvider, theme } from 'antd';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 
@@ -9,7 +10,7 @@ import Titlebar from '~/components/Titlebar';
 import { configStore } from '~/stores/config';
 import { updateStore } from '~/stores/update';
 import { InitGlobalStyled } from '~/styles/init';
-import { darkTheme, lightTheme, sizes } from '~/styles/themes';
+import { antdTheme, darkTheme, lightTheme, sizes } from '~/styles/themes';
 
 type Sizes = typeof sizes;
 type Colors = typeof lightTheme;
@@ -21,7 +22,17 @@ declare module 'styled-components' {
   }
 }
 
-const App = ({ children }: { children: ReactNode }) => {
+const App = () => {
+  return (
+    <ConfigProvider theme={antdTheme}>
+      <AppInner />
+    </ConfigProvider>
+  );
+};
+
+const AppInner = () => {
+  const antdToken = theme.useToken();
+
   const config = useRecoilValue(configStore);
   const [update, setUpdate] = useRecoilState(updateStore);
 
@@ -40,20 +51,21 @@ const App = ({ children }: { children: ReactNode }) => {
     window.electron.initlizeUpdater();
   };
 
+  const styledTheme = useMemo(
+    () => ({
+      sizes: sizes,
+      colors: config.general.theme === 'light' ? lightTheme : darkTheme,
+      token: antdToken.token,
+    }),
+    [config.general.theme],
+  );
+
   useEffect(() => {
     bootstrap();
   }, []);
 
   return (
-    <ThemeProvider
-      theme={useMemo(
-        () => ({
-          sizes: sizes,
-          colors: config.general.theme === 'light' ? lightTheme : darkTheme,
-        }),
-        [config.general.theme],
-      )}
-    >
+    <ThemeProvider theme={styledTheme}>
       <InitGlobalStyled />
 
       <div id="app">

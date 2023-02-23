@@ -3,11 +3,12 @@ import { app, BrowserWindow, Menu, nativeImage, Tray } from 'electron';
 import { join } from 'path';
 
 import { productName, protocols } from '../electron-builder.json';
+import { globImport } from './utils/import';
 
-export type MyAppType = InstanceType<typeof MyApp>;
-export type ModuleFunction = (app: MyAppType) => void | Promise<void>;
+export type AppContextType = InstanceType<typeof AppContext>;
+export type ModuleFunction = (context: AppContextType) => void | Promise<void>;
 
-class MyApp {
+class AppContext {
   // deep link protocol
   readonly PROTOCOL = protocols.name;
 
@@ -37,6 +38,7 @@ class MyApp {
   async bootstrap() {
     await this.initliazeElectron();
     await this.autoload();
+    await this.createWindow();
   }
 
   async initliazeElectron() {
@@ -58,7 +60,6 @@ class MyApp {
     });
 
     await app.whenReady();
-    await this.createWindow();
     await this.createTray();
   }
 
@@ -88,11 +89,9 @@ class MyApp {
       this.window.loadFile(this.PROD_LOAD_FILE_PATH, {
         hash: this.PROD_LOAD_FILE_HASH,
       });
-
-      this.window.webContents.openDevTools(); // FIXME: Remove this line
     } else {
-      this.window.loadURL(this.DEV_URL);
-      this.window.webContents.openDevTools(); // FIXME: Remove this line
+      await this.window.loadURL(this.DEV_URL);
+      this.window.webContents.openDevTools();
     }
 
     this.window.on('ready-to-show', () => {
@@ -119,14 +118,10 @@ class MyApp {
   }
 
   async autoload() {
-    const modules = import.meta.glob<{ default: ModuleFunction }>('./modules/**/index.ts', {
-      eager: true,
-    });
+    const modules = await globImport('./modules/**/index.js', { cwd: __dirname });
 
-    for (const module of Object.values(modules)) {
-      await this.register(module.default);
-    }
+    await Promise.all(modules.map(({ default: module }) => this.register(module)));
   }
 }
 
-export default MyApp;
+export default AppContext;
