@@ -19,7 +19,7 @@ export type UpdateEvent =
   | 'download-progress'
   | 'update-downloaded';
 
-const UpdateModule: ModuleFunction = ({ window }) => {
+const UpdateModule: ModuleFunction = context => {
   const handleUpdateEvent = (event: UpdateEvent) => {
     return (data?: any) => {
       if (event !== 'download-progress') {
@@ -30,8 +30,8 @@ const UpdateModule: ModuleFunction = ({ window }) => {
         });
       }
 
-      if (window) {
-        window.webContents.send('update', event, data);
+      if (context.window) {
+        context.window.webContents.send('update', event, data);
       }
     };
   };

@@ -5,9 +5,11 @@ import { configStore } from '@app/stores/config';
 
 export type AppControlAction = 'devtools' | 'minimize' | 'maximize' | 'close';
 
-const GeneralModule: ModuleFunction = ({ window }) => {
+const GeneralModule: ModuleFunction = context => {
   // 창 닫기, 최대화, 최소화 같은 컨트롤 기능
   ipcMain.on('appControl', async (_, action: AppControlAction) => {
+    const { window } = context;
+
     if (!window) return;
 
     switch (action) {
