@@ -1,6 +1,5 @@
 ![electron-vite-template-github-card](https://user-images.githubusercontent.com/43225384/196135599-585afdc5-9905-4400-bb02-ab0e7720da50.png)
 
-
 # Electron + Vite + React + TypeScript Template
 
 A template for using electron quickly.<br/>
@@ -9,6 +8,7 @@ Please understand that the code and explanation are mainly written in Korean. �
 <br />
 
 ## 특징들 둘러보기
+
 - electron & vite를 사용해 빠른 개발, 빌드가 가능한 TypeScript 환경
 - 앱에 필수적인 요소 자동 업데이트, 저장소, 로그 등 사전구성
 - 파일 시스템 라우팅 기능 (Next.js에서 사용하던 방식)
@@ -32,7 +32,6 @@ Please understand that the code and explanation are mainly written in Korean. �
 - CSS: [`styled-components`](https://styled-components.com/)
 - State management library: [`recoil`](https://hookstate.js.org/)
 - Date: [`dayjs`](https://day.js.org/)
-- Form value handle: [`formik`](https://formik.org/)
 
 <br />
 
@@ -61,7 +60,7 @@ yarn build:all
 <br />
 
 ## 스크린샷들
+
 <img width="1718" alt="image" src="https://user-images.githubusercontent.com/43225384/196127143-2fd2fb65-5858-4bda-87a8-97c6e0487d8f.png">
 <img width="1718" alt="image" src="https://user-images.githubusercontent.com/43225384/196126603-388acf2c-760b-45f2-8738-5c1d2a4b4892.png">
 <img width="1718" alt="image" src="https://user-images.githubusercontent.com/43225384/196126770-08f75a7c-653d-4264-8c38-eb147c55193d.png">
-

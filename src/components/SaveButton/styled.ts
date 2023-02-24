@@ -15,6 +15,11 @@ export const SaveButtonStyled = styled(motion.div)`
   margin-top: 2rem;
   border-radius: 8px;
   z-index: 100;
+  border: 2px solid transparent;
+
+  &.invalid {
+    animation: invalidAnimation 500ms;
+  }
 
   > span {
     font-size: 1rem;
@@ -38,6 +43,50 @@ export const SaveButtonStyled = styled(motion.div)`
     &:hover,
     &:focus {
       background-color: ${props => darken(0.1, props.theme.colors.success)};
+    }
+  }
+
+  @keyframes invalidAnimation {
+    0% {
+      transform: translate(1px, 1px);
+      border-color: ${props => props.theme.colors.error};
+    }
+    10% {
+      transform: translate(-1px, -2px);
+      border-color: ${props => props.theme.colors.error};
+    }
+    20% {
+      transform: translate(-3px, 0px);
+      border-color: ${props => props.theme.colors.error};
+    }
+    30% {
+      transform: translate(3px, 2px);
+      border-color: ${props => props.theme.colors.error};
+    }
+    40% {
+      transform: translate(1px, -1px);
+      border-color: ${props => props.theme.colors.error};
+    }
+    50% {
+      transform: translate(-1px, 2px);
+      border-color: ${props => props.theme.colors.error};
+    }
+    60% {
+      transform: translate(-3px, 1px);
+      border-color: ${props => props.theme.colors.error};
+    }
+    70% {
+      transform: translate(3px, 1px);
+      border-color: ${props => props.theme.colors.error};
+    }
+    80% {
+      transform: translate(-1px, -1px);
+    }
+    90% {
+      transform: translate(1px, 2px);
+    }
+    100% {
+      transform: translate(1px, -2px);
     }
   }
 `;

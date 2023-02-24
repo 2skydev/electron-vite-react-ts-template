@@ -103,15 +103,26 @@ export const InitGlobalStyled = memo(createGlobalStyle`
         display: flex;
         align-items: center;
         justify-content: center;
+
+        .ant-switch-inner-checked,
+        .ant-switch-inner-unchecked {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .ant-switch-inner-unchecked {
+          margin-top: 0;
+        }
       }
-    }
 
-    .ant-switch-checked {
-      background-color: ${props => props.theme.colors.primary};
-    }
-
-    .ant-switch-checked .ant-switch-handle {
-      left: calc(100% - 24px - 2px);
+      &.ant-switch-checked {
+        background-color: ${props => props.theme.colors.primary};
+      }
+  
+      &.ant-switch-checked .ant-switch-handle {
+        inset-inline-start: calc(100% - 24px - 2px);
+      }
     }
 
     .rightButtons {
@@ -119,7 +130,6 @@ export const InitGlobalStyled = memo(createGlobalStyle`
       justify-content: flex-end;
       margin-top: 1rem;
     }
-
 
     /**
      * antd-table 스타일 커스텀
