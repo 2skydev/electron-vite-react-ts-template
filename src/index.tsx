@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import 'antd/dist/reset.css';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import relativeTime from 'dayjs/plugin/relativeTime';

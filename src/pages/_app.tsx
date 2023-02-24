@@ -10,10 +10,10 @@ import Titlebar from '~/components/Titlebar';
 import { configStore } from '~/stores/config';
 import { updateStore } from '~/stores/update';
 import { InitGlobalStyled } from '~/styles/init';
-import { antdTheme, darkTheme, lightTheme, sizes } from '~/styles/themes';
+import { antdTheme, colors, sizes } from '~/styles/themes';
 
 type Sizes = typeof sizes;
-type Colors = typeof lightTheme;
+type Colors = typeof colors;
 
 declare module 'styled-components' {
   export interface DefaultTheme {
@@ -54,7 +54,7 @@ const AppInner = () => {
   const styledTheme = useMemo(
     () => ({
       sizes: sizes,
-      colors: config.general.theme === 'light' ? lightTheme : darkTheme,
+      colors: colors,
       token: antdToken.token,
     }),
     [config.general.theme],
@@ -70,6 +70,7 @@ const AppInner = () => {
 
       <div id="app">
         <Titlebar />
+
         <Layout>
           <Outlet />
         </Layout>
