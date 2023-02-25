@@ -2,11 +2,14 @@ import { app, BrowserWindow, Menu, nativeImage, Tray } from 'electron';
 
 import { join } from 'path';
 
-import { productName, protocols } from '../electron-builder.json';
 import { globImport } from './utils/import';
 
 export type AppContextType = InstanceType<typeof AppContext>;
 export type ModuleFunction = (context: AppContextType) => void | Promise<void>;
+
+const { productName, protocols } = require(app.isPackaged
+  ? './app.json'
+  : '../electron-builder.json');
 
 class AppContext {
   // deep link protocol
