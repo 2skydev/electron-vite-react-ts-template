@@ -34,6 +34,12 @@ export const InitGlobalStyled = memo(createGlobalStyle`
 
   a {
     text-decoration: none;
+    color: ${props => props.theme.colors.primary};
+    transition: 250ms color;
+
+    &:hover {
+      color: ${props => lighten(0.1, props.theme.colors.primary)};
+    }
   }
 
   .selectable {
