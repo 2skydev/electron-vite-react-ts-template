@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 
 import clsx from 'clsx';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useRecoilValue } from 'recoil';
 
 import { layoutStore } from '~/stores/layout';
