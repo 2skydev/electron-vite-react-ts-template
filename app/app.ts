@@ -22,7 +22,7 @@ class AppContext {
   readonly DEV_URL = `http://localhost:3000/#`;
 
   // production mode - load file
-  readonly PROD_LOAD_FILE_PATH = join(__dirname, '../index.html');
+  readonly PROD_LOAD_FILE_PATH = join(__dirname, '../dist/index.html');
   readonly PROD_LOAD_FILE_HASH = '#';
 
   // resources directory
