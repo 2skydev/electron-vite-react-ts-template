@@ -1,15 +1,14 @@
 import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
 
-import 'antd/dist/antd.css';
+import 'antd/dist/reset.css';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { RecoilRoot } from 'recoil';
 import { SWRConfig, SWRConfiguration } from 'swr';
 
-import { ElectronRendererContext } from '@app/preload';
+import { ElectronRendererContext } from '@app/types/preload';
 
 import FileSystemRoutes from '~/components/FileSystemRoutes';
 
@@ -30,13 +29,11 @@ const swrConfig: SWRConfiguration = {
 };
 
 createRoot(document.getElementById('root') as HTMLElement).render(
-  <HashRouter>
-    <RecoilRoot>
-      <SWRConfig value={swrConfig}>
-        <Suspense>
-          <FileSystemRoutes />
-        </Suspense>
-      </SWRConfig>
-    </RecoilRoot>
-  </HashRouter>,
+  <RecoilRoot>
+    <SWRConfig value={swrConfig}>
+      <Suspense>
+        <FileSystemRoutes />
+      </Suspense>
+    </SWRConfig>
+  </RecoilRoot>,
 );

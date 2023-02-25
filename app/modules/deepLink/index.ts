@@ -2,50 +2,44 @@ import { app } from 'electron';
 
 import { match, MatchResult } from 'path-to-regexp';
 
-import { ModuleFunction, MyAppType } from '@app/app';
+import { ModuleFunction, AppContextType } from '@app/app';
+import { globImport } from '@app/utils/import';
 
 export type DeepLinkResolvers = Record<
   string,
-  (matchResult: MatchResult<any>, app: MyAppType) => void
+  (matchResult: MatchResult<any>, app: AppContextType) => void
 >;
 
-const DeepLinkModule: ModuleFunction = myapp => {
-  let resolvers: DeepLinkResolvers = {};
+const DeepLinkModule: ModuleFunction = async context => {
+  const modules = await globImport('./resolvers/**/*.resolver.js', { cwd: __dirname });
 
-  const resolverFiles = import.meta.glob<{ default: DeepLinkResolvers }>(
-    './resolvers/**/*.resolver.ts',
-    {
-      eager: true,
-    },
-  );
-
-  for (const resolverFile of Object.values(resolverFiles)) {
-    resolvers = { ...resolvers, ...resolverFile.default };
-  }
+  const resolvers: DeepLinkResolvers = modules.reduce((resolvers, module) => {
+    return { ...resolvers, ...module.default };
+  }, {});
 
   const runDeepLinkResolver = (url: string) => {
-    const pathname = url.replace(`${myapp.PROTOCOL}://`, '/');
+    const pathname = url.replace(`${context.PROTOCOL}://`, '/');
 
     for (const path in resolvers) {
       const data = match(path)(pathname);
 
       if (data) {
-        resolvers[path](data, myapp);
+        resolvers[path](data, context);
         break;
       }
     }
   };
 
   app.on('second-instance', (_, argv) => {
-    if (!myapp.IS_MAC) {
-      const url = argv.find(arg => arg.startsWith(`${myapp.PROTOCOL}://`));
+    if (!context.IS_MAC) {
+      const url = argv.find(arg => arg.startsWith(`${context.PROTOCOL}://`));
 
       if (url) {
         runDeepLinkResolver(url);
       }
     }
 
-    myapp.createWindow();
+    context.createWindow();
   });
 
   app.on('open-url', (_, url) => {

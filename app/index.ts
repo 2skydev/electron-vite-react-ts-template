@@ -1,6 +1,6 @@
-import MyApp from './app';
+import AppContext from './app';
 
 (async () => {
-  const myApp = new MyApp();
-  await myApp.bootstrap();
+  const context = new AppContext();
+  await context.bootstrap();
 })();

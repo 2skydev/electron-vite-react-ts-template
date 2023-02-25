@@ -1,19 +1,21 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import { Button, Popconfirm, Space } from 'antd';
 import clsx from 'clsx';
 import deepEqual from 'fast-deep-equal';
 import { AnimatePresence } from 'framer-motion';
 
+import { UseCustomUseFormReturn } from '~/hooks/useCustomForm';
+
 import { SaveButtonStyled } from './styled';
 
 export interface SaveButtonProps {
-  formik: any;
+  form: UseCustomUseFormReturn<any, any>;
   defaultValues: any;
   className?: string;
   confirmText?: ReactNode;
   useConfirm?: boolean;
-  reset?: boolean;
 }
 
 const animation = {
@@ -41,37 +43,59 @@ const animation = {
   },
 };
 
+let timeoutHandle: NodeJS.Timeout;
+
 const SaveButton = ({
+  form,
   className,
   defaultValues,
-  formik,
   confirmText,
   useConfirm = false,
-  reset,
 }: SaveButtonProps) => {
+  const [invalid, setInvalid] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const isEqual = deepEqual(defaultValues, formik.values);
+  const values = useWatch({
+    control: form.control,
+  });
+
+  const isEqual = deepEqual(defaultValues, values);
 
   const handleSave = async () => {
     setLoading(true);
-    await formik.submitForm();
+
+    const valid = await form.submit();
+
+    if (!valid) {
+      setInvalid(true);
+    }
+
     setLoading(false);
   };
+
+  useEffect(() => {
+    clearTimeout(timeoutHandle);
+
+    if (invalid) {
+      timeoutHandle = setTimeout(() => {
+        setInvalid(false);
+      }, 1000);
+    }
+  }, [invalid]);
 
   return (
     <AnimatePresence>
       {!isEqual && (
-        <SaveButtonStyled className={clsx('SaveButton', className)} key="SaveButton" {...animation}>
+        <SaveButtonStyled
+          className={clsx('SaveButton', className, { invalid })}
+          key="SaveButton"
+          {...animation}
+        >
           <span>저장하지 않은 변경 사항이 있어요!</span>
 
           <Space>
-            <Button
-              className="cancel"
-              onClick={() => (reset ? formik.handleReset() : formik.setValues(defaultValues))}
-              disabled={loading}
-            >
+            <Button className="cancel" disabled={loading} onClick={() => form.reset(defaultValues)}>
               되돌리기
             </Button>
 
@@ -80,8 +104,8 @@ const SaveButton = ({
               okText="저장"
               cancelText="취소"
               placement="topRight"
-              visible={confirmVisible}
-              onVisibleChange={(visible: boolean) => {
+              open={confirmVisible}
+              onOpenChange={(visible: boolean) => {
                 if (useConfirm) {
                   setConfirmVisible(visible);
                 }
@@ -95,7 +119,7 @@ const SaveButton = ({
                 className="save"
                 type="primary"
                 loading={loading}
-                onClick={useConfirm ? () => {} : handleSave}
+                onClick={useConfirm ? undefined : handleSave}
               >
                 변경사항 저장하기
               </Button>

@@ -3,5 +3,13 @@
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "typescript.preferences.importModuleSpecifier": "shortest",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "/*electron-builder.json"
+      ],
+      "url": "https://json.schemastore.org/electron-builder"
+    }
+  ]
 }

@@ -1,5 +1,7 @@
-import { ReactNode, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { Outlet } from 'react-router-dom';
 
+import { ConfigProvider, theme } from 'antd';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 
@@ -8,10 +10,10 @@ import Titlebar from '~/components/Titlebar';
 import { configStore } from '~/stores/config';
 import { updateStore } from '~/stores/update';
 import { InitGlobalStyled } from '~/styles/init';
-import { darkTheme, lightTheme, sizes } from '~/styles/themes';
+import { antdTheme, colors, sizes } from '~/styles/themes';
 
 type Sizes = typeof sizes;
-type Colors = typeof lightTheme;
+type Colors = typeof colors;
 
 declare module 'styled-components' {
   export interface DefaultTheme {
@@ -20,7 +22,17 @@ declare module 'styled-components' {
   }
 }
 
-const App = ({ children }: { children: ReactNode }) => {
+const App = () => {
+  return (
+    <ConfigProvider theme={antdTheme}>
+      <AppInner />
+    </ConfigProvider>
+  );
+};
+
+const AppInner = () => {
+  const antdToken = theme.useToken();
+
   const config = useRecoilValue(configStore);
   const [update, setUpdate] = useRecoilState(updateStore);
 
@@ -39,25 +51,29 @@ const App = ({ children }: { children: ReactNode }) => {
     window.electron.initlizeUpdater();
   };
 
+  const styledTheme = useMemo(
+    () => ({
+      sizes: sizes,
+      colors: colors,
+      token: antdToken.token,
+    }),
+    [],
+  );
+
   useEffect(() => {
     bootstrap();
   }, []);
 
   return (
-    <ThemeProvider
-      theme={useMemo(
-        () => ({
-          sizes: sizes,
-          colors: config.general.theme === 'light' ? lightTheme : darkTheme,
-        }),
-        [config.general.theme],
-      )}
-    >
+    <ThemeProvider theme={styledTheme}>
       <InitGlobalStyled />
 
       <div id="app">
         <Titlebar />
-        <Layout>{children}</Layout>
+
+        <Layout>
+          <Outlet />
+        </Layout>
       </div>
     </ThemeProvider>
   );

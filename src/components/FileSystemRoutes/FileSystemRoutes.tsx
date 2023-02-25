@@ -1,9 +1,7 @@
 import { Fragment } from 'react';
-import { useRoutes, RouteObject } from 'react-router-dom';
+import { useRoutes, RouteObject, RouterProvider, createHashRouter } from 'react-router-dom';
 
 type Element = () => JSX.Element;
-
-type Route = RouteObject;
 
 interface FileSystemRoutesProps {}
 
@@ -25,63 +23,69 @@ const preservedRoutes: Partial<Record<string, Element>> = Object.keys(PRESERVED)
 const App = preservedRoutes?.['_app'] || Fragment;
 const NotFound = preservedRoutes?.['404'] || Fragment;
 
-const routes = Object.keys(ROUTES).reduce<Route[]>(
-  (routes, key) => {
-    const module = ROUTES[key];
+const router = createHashRouter([
+  {
+    path: '/',
+    element: <App />,
+    children: Object.keys(ROUTES).reduce<RouteObject[]>(
+      (routes, key) => {
+        const module = ROUTES[key];
 
-    const route: Route = {
-      element: <module.default />,
-    };
+        const route: RouteObject = {
+          element: <module.default />,
+        };
 
-    const segments = key
-      .replace(/\/src\/pages|\.tsx$/g, '')
-      .replace(/\[\.{3}.+\]/, '*')
-      .replace(/\[([^\]]+)\]/g, ':$1')
-      .split('/')
-      .filter(Boolean);
+        const segments = key
+          .replace(/\/src\/pages|\.tsx$/g, '')
+          .replace(/\[\.{3}.+\]/, '*')
+          .replace(/\[([^\]]+)\]/g, ':$1')
+          .split('/')
+          .filter(Boolean);
 
-    segments.reduce((parent, segment, index) => {
-      const path = segment.replace(/index|\./g, '');
-      const root = index === 0;
-      const leaf = index === segments.length - 1 && segments.length > 1;
-      const node = !root && !leaf;
-      const insert = /^\w|\//.test(path) ? 'unshift' : 'push';
+        segments.reduce((parent, segment, index) => {
+          const path = segment.replace(/index|\./g, '');
+          const root = index === 0;
+          const leaf = index === segments.length - 1 && segments.length > 1;
+          const node = !root && !leaf;
+          const insert = /^\w|\//.test(path) ? 'unshift' : 'push';
 
-      if (root) {
-        const dynamic = path.startsWith(':') || path === '*';
-        if (dynamic) return parent;
+          if (root) {
+            const dynamic = path.startsWith(':') || path === '*';
+            if (dynamic) return parent;
 
-        const last = segments.length === 1;
-        if (last) {
-          routes.push({ path, ...route });
+            const last = segments.length === 1;
+            if (last) {
+              routes.push({ path, ...route });
+              return parent;
+            }
+          }
+
+          if (root || node) {
+            const current = root ? routes : parent.children;
+            const found = current?.find(route => route.path === path);
+            if (found) found.children ??= [];
+            else current?.[insert]({ path, children: [] });
+            return (
+              found || (current?.[insert === 'unshift' ? 0 : current.length - 1] as RouteObject)
+            );
+          }
+
+          if (leaf) {
+            parent?.children?.[insert]({ path, ...route });
+          }
+
           return parent;
-        }
-      }
+        }, {} as RouteObject);
 
-      if (root || node) {
-        const current = root ? routes : parent.children;
-        const found = current?.find(route => route.path === path);
-        if (found) found.children ??= [];
-        else current?.[insert]({ path, children: [] });
-        return found || (current?.[insert === 'unshift' ? 0 : current.length - 1] as Route);
-      }
-
-      if (leaf) {
-        parent?.children?.[insert]({ path, ...route });
-      }
-
-      return parent;
-    }, {} as Route);
-
-    return routes;
+        return routes;
+      },
+      [{ path: '*', element: <NotFound /> }],
+    ),
   },
-  [{ path: '*', element: <NotFound /> }],
-);
+]);
 
 const FileSystemRoutes = (props: FileSystemRoutesProps) => {
-  const element = useRoutes(routes);
-
-  return <App>{element}</App>;
+  return <RouterProvider router={router} />;
 };
 
 export default FileSystemRoutes;

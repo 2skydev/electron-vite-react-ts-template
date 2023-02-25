@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 
 import clsx from 'clsx';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useRecoilValue } from 'recoil';
 
 import { layoutStore } from '~/stores/layout';
@@ -35,17 +35,14 @@ const Content = ({ className, children }: ContentProps) => {
       </div>
 
       <div className="content">
-        <AnimatePresence>
-          <motion.div
-            key={pathname}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 1, y: 0, transition: { duration: 0 } }}
-            transition={{ duration: 0.3 }}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
+        <motion.div
+          key={pathname}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {children}
+        </motion.div>
       </div>
     </ContentStyled>
   );
