@@ -57,7 +57,7 @@ const AppInner = () => {
       colors: colors,
       token: antdToken.token,
     }),
-    [config.general.theme],
+    [],
   );
 
   useEffect(() => {
