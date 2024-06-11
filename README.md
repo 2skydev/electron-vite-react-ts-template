@@ -7,6 +7,21 @@ Please understand that the code and explanation are mainly written in Korean. �
 
 <br />
 
+## ⚠️ 이 템플릿은 더 이상 유지보수를 진행하지 않습니다.
+
+아래 링크에 있는 nestjs로 새롭게 생성한 템플릿을 이용해주세요!
+
+> 차이점
+> - nestjs + ipc decorator로 통신
+> - 템플릿 UI 및 의존성 패키지 제거
+> - 업데이트 로딩 화면 추가
+> - yarn에서 pnpm으로 변경
+> - 자동 업데이트 및 배포 Github Action 사전 구성
+
+https://github.com/2skydev/electron-nestjs-react-vite-template
+
+<br />
+
 ## 특징들 둘러보기
 
 - electron & vite를 사용해 빠른 개발, 빌드가 가능한 TypeScript 환경
